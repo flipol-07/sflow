@@ -35,51 +35,56 @@ class PreviewWidget(QWidget):
         container.setObjectName("container")
         container.setStyleSheet("""
             QWidget#container {
-                background-color: rgba(20, 20, 20, 245);
-                border: 1px solid rgba(255, 255, 255, 30);
-                border-radius: 12px;
+                background-color: rgba(18, 18, 18, 250);
+                border: 1px solid rgba(255, 255, 255, 20);
+                border-radius: 14px;
             }
             QLabel {
                 color: #FFFFFF;
-                font-family: Arial, sans-serif;
-                font-weight: bold;
-                font-size: 14px;
+                font-family: 'Inter', Arial, sans-serif;
+                font-weight: 500;
+                font-size: 13px;
+                letter-spacing: 0.5px;
             }
             QTextEdit {
-                background-color: rgba(40, 40, 40, 255);
-                color: #E0E0E0;
-                border: 1px solid rgba(255, 255, 255, 20);
-                border-radius: 6px;
-                padding: 8px;
+                background-color: rgba(30, 30, 30, 255);
+                color: #E2E8F0;
+                border: 1px solid rgba(255, 255, 255, 10);
+                border-radius: 8px;
+                padding: 12px;
                 font-family: Consolas, monospace;
                 font-size: 13px;
+                line-height: 1.5;
+            }
+            QTextEdit:focus {
+                border: 1px solid rgba(16, 185, 129, 100); /* Emerald hint */
             }
             QPushButton {
-                font-family: Arial, sans-serif;
+                font-family: 'Inter', Arial, sans-serif;
                 font-size: 13px;
-                font-weight: bold;
-                border-radius: 6px;
-                padding: 8px 16px;
+                font-weight: 600;
+                border-radius: 8px;
+                padding: 10px 18px;
             }
             QPushButton#btn_original {
-                background-color: transparent;
-                color: #A0A0A0;
-                border: 1px solid #505050;
+                background-color: rgba(255, 255, 255, 10);
+                color: #94A3B8;
+                border: 1px solid rgba(255, 255, 255, 15);
                 margin-top: 10px;
             }
             QPushButton#btn_original:hover {
-                background-color: rgba(255, 255, 255, 10);
+                background-color: rgba(255, 255, 255, 20);
                 color: #FFFFFF;
-                border: 1px solid #707070;
+                border: 1px solid rgba(255, 255, 255, 30);
             }
             QPushButton#btn_refined {
-                background-color: #FFFFFF;
-                color: #000000;
+                background-color: #10B981; /* Emerald 500 */
+                color: #FFFFFF;
                 border: none;
                 margin-top: 10px;
             }
             QPushButton#btn_refined:hover {
-                background-color: #E0E0E0;
+                background-color: #059669; /* Emerald 600 */
             }
         """)
         

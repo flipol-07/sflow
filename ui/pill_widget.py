@@ -120,13 +120,35 @@ class PillWidget(QWidget):
         except Exception as e:
             print(f"Warning: native macOS setup failed: {e}")
 
+    def _setup_native_windows(self):
+        """Configure native Windows properly to forcefully keep it always on top."""
+        if sys.platform != "win32":
+            return
+            
+        try:
+            import ctypes
+            # Force TOPMOST via Win32 API to ensure it stays in front of everything
+            HWND_TOPMOST = -1
+            SWP_NOSIZE = 0x0001
+            SWP_NOMOVE = 0x0002
+            SWP_NOACTIVATE = 0x0010
+            
+            hwnd = int(self.winId())
+            ctypes.windll.user32.SetWindowPos(
+                hwnd, HWND_TOPMOST, 0, 0, 0, 0, 
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE
+            )
+        except Exception as e:
+            print(f"Warning: native Windows setup failed: {e}")
+
     def showEvent(self, event):
-        """Called when the widget is first shown. Sets up native macOS properties."""
+        """Called when the widget is first shown. Sets up native properties."""
         super().showEvent(event)
         try:
             self._setup_native_macos()
+            self._setup_native_windows()
         except Exception as e:
-            print(f"Warning: native macOS setup failed: {e}")
+            print(f"Warning: native setup failed: {e}")
 
     def set_state(self, state: str):
         self._state = state
@@ -251,6 +273,28 @@ class PillWidget(QWidget):
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self._drag_pos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
+            event.accept()
+        elif event.button() == Qt.MouseButton.RightButton:
+            from PyQt6.QtWidgets import QMenu
+            menu = QMenu(self)
+            menu.setStyleSheet("""
+                QMenu {
+                    background-color: rgba(20, 20, 20, 245);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 30);
+                    border-radius: 6px;
+                }
+                QMenu::item {
+                    padding: 5px 20px 5px 20px;
+                }
+                QMenu::item:selected {
+                    background-color: rgba(255, 255, 255, 30);
+                }
+            """)
+            close_action = menu.addAction("❌ Cerrar / Apagar Howl")
+            action = menu.exec(event.globalPosition().toPoint())
+            if action == close_action:
+                QApplication.quit()
             event.accept()
 
     def mouseMoveEvent(self, event):

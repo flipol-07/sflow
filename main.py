@@ -9,9 +9,7 @@ from PyQt6.QtCore import Qt, QObject, QTimer, pyqtSignal, pyqtSlot
 from ui.pill_widget import PillWidget
 from ui.refine_widget import RefineWidget
 from ui.preview_widget import PreviewWidget
-from ui.pill_widget import PillWidget
-from ui.refine_widget import RefineWidget
-from ui.preview_widget import PreviewWidget
+from ui.refine_config_widget import RefineConfigWidget
 
 # Delay heavy module loading to speed up UI startup
 # They will be imported inside _deferred_setup
@@ -33,7 +31,9 @@ class HowlApp(QObject):
         # Fast UI initialization
         self.pill = PillWidget()
         self.refine_widget = RefineWidget()
-        self.refine_widget.refine_requested.connect(self._on_refine_requested, Qt.ConnectionType.QueuedConnection)
+        self.refine_widget.refine_requested.connect(self._on_configure_requested, Qt.ConnectionType.QueuedConnection)
+        self.config_widget = RefineConfigWidget()
+        self.config_widget.generate_requested.connect(self._on_generate_requested, Qt.ConnectionType.QueuedConnection)
         self.preview_widget = PreviewWidget()
         self.preview_widget.choice_made.connect(self._on_preview_choice, Qt.ConnectionType.QueuedConnection)
 
@@ -146,18 +146,23 @@ class HowlApp(QObject):
         print(f"Transcription error: {error}")
 
     @pyqtSlot(str)
-    def _on_refine_requested(self, text: str):
+    def _on_configure_requested(self, text: str):
+        self.config_widget.show_for_text(text)
+
+    @pyqtSlot(str, str, str)
+    def _on_generate_requested(self, text: str, output_type: str, context: str):
+        self.pill.set_state(PillWidget.STATE_PROCESSING)
         thread = threading.Thread(
             target=self._refine_worker,
-            args=(text,),
+            args=(text, output_type, context),
             daemon=True,
         )
         thread.start()
 
-    def _refine_worker(self, text: str):
+    def _refine_worker(self, text: str, output_type: str, context: str):
         from core.refiner import refine_prompt
         try:
-            refined_text = refine_prompt(text)
+            refined_text = refine_prompt(text, output_type, context)
             self.refinement_done.emit(text, refined_text)
         except Exception as e:
             self.refinement_error.emit(str(e))

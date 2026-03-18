@@ -30,17 +30,18 @@ class RefineWidget(QWidget):
         self.btn = QPushButton("✨ Refinar Prompt")
         self.btn.setStyleSheet("""
             QPushButton {
-                background-color: transparent;
-                color: #D0D0D0;
-                border: none;
-                font-family: Arial, sans-serif;
+                background-color: rgba(255, 255, 255, 10);
+                color: #E2E8F0;
+                border: 1px solid rgba(255, 255, 255, 15);
+                font-family: 'Inter', Arial, sans-serif;
                 font-size: 13px;
-                font-weight: bold;
+                font-weight: 600;
                 border-radius: 8px;
             }
             QPushButton:hover {
                 color: #FFFFFF;
-                background-color: rgba(255, 255, 255, 15);
+                background-color: #10B981; /* Emerald 500 */
+                border: 1px solid #059669; /* Emerald 600 */
             }
         """)
         self.btn.setCursor(Qt.CursorShape.PointingHandCursor)
